@@ -1,0 +1,71 @@
+name: coffee
+description: "A new Flutter project."
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+dependencies:
+  flutter:
+    sdk: flutter
+  liquid_pull_to_refresh: ^3.0.1
+  scrollable_positioned_list: ^0.3.8
+  url_launcher: ^6.3.0
+  google_fonts: ^6.2.1
+  cupertino_icons: ^1.0.8
+  sqflite: ^2.3.3+1
+  shared_preferences: ^2.0.15
+  provider: ^6.1.2
+  flutter_email_sender: ^6.0.3
+  qr_flutter: ^4.1.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^4.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/8.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/8.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/8.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/8.png"
+
+flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/8.png
+    - assets/1.png
+    - assets/2.png
+    - assets/3.png
+    - assets/4.png
+    - assets/5.png
+    - assets/6.png
+    - assets/7.png
+    - assets/9.png
+    - assets/Americano.png
+    - assets/trasua.png
+    - assets/nuocep.png
+    - assets/Yae Miko Sticker/2.png
+    - assets/Yae Miko Sticker/3.png
+    - assets/QR.png
+  fonts:
+    - family: EduAUVICWANTHand
+      fonts:
+        - asset: fonts/EduAUVICWANTHand-Bold.ttf
+        - asset: fonts/EduAUVICWANTHand-Medium.ttf
+        - asset: fonts/EduAUVICWANTHand-Regular.ttf
+        - asset: fonts/EduAUVICWANTHand-SemiBold.ttf
