@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee/services/CartModel.dart';
 
-class Cart extends StatelessWidget {
+class Cart extends StatefulWidget {
   const Cart({super.key});
 
+  @override
+  State<Cart> createState() => _CartState();
+}
+
+class _CartState extends State<Cart> {
+  bool _isSnackBarVisible = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,13 +53,21 @@ class Cart extends StatelessWidget {
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
-                            await cart.remove(index); // Đảm bảo gọi await
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Sản phẩm đã được xóa'),
-                                duration: Duration(milliseconds: 200),
-                              ),
-                            );
+                            await cart.remove(index);
+                            if (!_isSnackBarVisible) {
+                              _isSnackBarVisible = true;
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Sản phẩm đã được xóa'),
+                                      duration: Duration(milliseconds: 200),
+                                    ),
+                                  )
+                                  .closed
+                                  .then((_) {
+                                _isSnackBarVisible = true;
+                              });
+                            }
                           },
                         ),
                       );

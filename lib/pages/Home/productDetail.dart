@@ -86,8 +86,8 @@ class ProductDetailPage extends StatelessWidget {
                         title: title,
                         money: money));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Sản phẩm đã được thêm vào giỏ hàng'),
+                      SnackBar(
+                        content: Text('${imageName} đã được thêm vào giỏ hàng'),
                         duration: Duration(milliseconds: 200),
                       ),
                     );

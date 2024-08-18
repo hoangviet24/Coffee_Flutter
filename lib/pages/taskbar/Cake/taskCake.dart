@@ -20,6 +20,7 @@ class taskCake extends StatefulWidget {
 }
 
 class _taskCakeState extends State<taskCake> {
+  bool _isSnackBarVisible = false;
   final List<Product> products = [
     Product(
         name: "Americano",
@@ -121,14 +122,22 @@ class _taskCakeState extends State<taskCake> {
                       onTap: () {
                         final cart =
                             Provider.of<CartModel>(context, listen: false);
-                        cart.add(
-                            product); // Thêm sản phẩm vào giỏ hàng của người dùng hiện tại
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Sản phẩm đã được thêm vào giỏ hàng'),
-                            duration: Duration(milliseconds: 200),
-                          ),
-                        );
+                        cart.add(product);
+                        if (!_isSnackBarVisible) {
+                          _isSnackBarVisible = true;
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      '${product.name} đã được thêm vào giỏ hàng'),
+                                  duration: Duration(milliseconds: 200),
+                                ),
+                              )
+                              .closed
+                              .then((_) {
+                            _isSnackBarVisible = false;
+                          });
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),

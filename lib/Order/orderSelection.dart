@@ -55,7 +55,7 @@ class OrderSelectionPage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
-        leading: Icon(icon, size: 40, color: Theme.of(context).primaryColor),
+        leading: Icon(icon, size: 40),
         title: Text(
           title,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

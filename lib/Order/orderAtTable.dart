@@ -14,24 +14,31 @@ class OrderTablePage extends StatefulWidget {
 }
 
 class _OrderTablePageState extends State<OrderTablePage> {
-  final TextEditingController _tableNumberController = TextEditingController();
+  int? _selectedTableNumber;
   final TextEditingController _reminderController = TextEditingController();
-
+  bool _isSnackBarVisible = false;
   @override
   void dispose() {
-    _tableNumberController.dispose();
     _reminderController.dispose();
     super.dispose();
   }
 
   void _submitOrder() {
-    final tableNumber = _tableNumberController.text;
-    final reminder = _reminderController.text;
-
-    if (tableNumber.isEmpty || reminder.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập số bàn và nhắc nhở')),
-      );
+    if (_selectedTableNumber == null) {
+      if (!_isSnackBarVisible) {
+        _isSnackBarVisible = true;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+              const SnackBar(
+                content: Text('Vui lòng chọn số bàn'),
+                duration: Duration(seconds: 1),
+              ),
+            )
+            .closed
+            .then((_) {
+          _isSnackBarVisible = false;
+        });
+      }
       return;
     }
 
@@ -56,13 +63,25 @@ class _OrderTablePageState extends State<OrderTablePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _tableNumberController,
+            DropdownButtonFormField<int>(
               decoration: const InputDecoration(
                 labelText: 'Số bàn',
                 border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.number,
+              value: _selectedTableNumber,
+              items: List.generate(20, (index) => index + 1).map((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text('Bàn $value'),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedTableNumber = value;
+                });
+              },
+              menuMaxHeight: 200.0,
+              hint: const Text('Chọn số bàn'),
             ),
             const SizedBox(height: 16.0),
             TextField(

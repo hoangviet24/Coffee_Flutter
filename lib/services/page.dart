@@ -46,10 +46,6 @@ class _UserDataPageState extends State<UserDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Coffee'),
-        actions: _buildAppBarActions(),
-      ),
       body: FutureBuilder<Users?>(
         future: _currentUserFuture,
         builder: (context, snapshot) {
@@ -60,7 +56,6 @@ class _UserDataPageState extends State<UserDataPage> {
           } else if (!snapshot.hasData) {
             return const Center(child: LoginScreen());
           }
-
           final user = snapshot.data!;
           return Padding(
             padding: const EdgeInsets.all(16.0),

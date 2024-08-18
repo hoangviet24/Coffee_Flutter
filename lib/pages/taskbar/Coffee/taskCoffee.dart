@@ -131,9 +131,9 @@ class _taskCoffeeState extends State<taskCoffee> {
                             cartModel
                                 .add(product); // Thêm sản phẩm vào giỏ hàng
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Sản phẩm đã được thêm vào giỏ hàng'),
+                              SnackBar(
+                                content: Text(
+                                    '${product.name} đã được thêm vào giỏ hàng'),
                                 duration: Duration(milliseconds: 200),
                               ),
                             );

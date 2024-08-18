@@ -16,6 +16,7 @@ class Other extends StatefulWidget {
 }
 
 class _OtherState extends State<Other> {
+  bool _isSnackBarVisible = false;
   @override
   Widget build(BuildContext context) {
     // Danh sách các sản phẩm
@@ -127,13 +128,22 @@ class _OtherState extends State<Other> {
                     onTap: () {
                       final cart =
                           Provider.of<CartModel>(context, listen: false);
-                      cart.add(product); // Thêm sản phẩm vào giỏ hàng
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Sản phẩm đã được thêm vào giỏ hàng'),
-                          duration: Duration(milliseconds: 200),
-                        ),
-                      );
+                      cart.add(product);
+                      if (!_isSnackBarVisible) {
+                        _isSnackBarVisible = true;
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    '${product.name} đã được thêm vào giỏ hàng'),
+                                duration: Duration(milliseconds: 200),
+                              ),
+                            )
+                            .closed
+                            .then((_) {
+                          _isSnackBarVisible = false;
+                        });
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),

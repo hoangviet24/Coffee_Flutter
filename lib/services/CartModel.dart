@@ -44,7 +44,7 @@ class CartModel extends ChangeNotifier {
         return Product(
           name: maps[i]['name'],
           title: maps[i]['title'],
-          money: (maps[i]['money'] as int).toDouble(),
+          money: maps[i]['money'],
           path: maps[i]['path'],
         );
       });

@@ -15,7 +15,6 @@ class QRScreen extends StatelessWidget {
     final qrData = 'Total Price: \$${totalPrice.toStringAsFixed(2)}';
 
     return Scaffold(
-      backgroundColor: Colors.white, // Thay đổi màu nền của Scaffold
       appBar: AppBar(
         title: const Text('Mã QR Thanh Toán'),
         centerTitle: true,

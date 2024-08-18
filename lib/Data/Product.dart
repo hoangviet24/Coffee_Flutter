@@ -26,7 +26,7 @@ class Product {
       name: map['name'],
       path: map['path'],
       title: map['title'],
-      money: map['money'],
+      money: (map['money'] as int).toDouble(),
     );
   }
 }
