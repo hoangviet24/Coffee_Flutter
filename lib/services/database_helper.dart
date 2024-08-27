@@ -56,12 +56,27 @@ class DatabaseHelper {
 
   Future<int> signup(Users user) async {
     final Database db = await initDB();
-    int result = await db.insert('users', user.toMap());
 
-    if (result > 0) {
+    // Kiểm tra xem tên người dùng đã tồn tại hay chưa
+    final result = await db.query(
+      'users',
+      where: 'usrName = ?',
+      whereArgs: [user.usrName],
+    );
+
+    // Nếu có kết quả trả về, nghĩa là tên người dùng đã tồn tại
+    if (result.isNotEmpty) {
+      return -1; // Trả về -1 để báo rằng tên người dùng đã tồn tại
+    }
+
+    // Nếu tên người dùng chưa tồn tại, tiến hành đăng ký
+    int insertResult = await db.insert('users', user.toMap());
+
+    if (insertResult > 0) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('savedUsername', user.usrName);
     }
-    return result;
+    return insertResult;
   }
+
 }
