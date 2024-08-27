@@ -1,17 +1,36 @@
+import 'package:coffee/Data/Product.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class HistoryModel {
   final String name;
-  final double price;
-
-  HistoryModel({required this.name, required this.price});
+  final String path;
+  final String title;
+  final double money;
+  HistoryModel(
+      {required this.name,
+      required this.money,
+      required this.path,
+      required this.title });
   Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'price': price,
-    };
+    return {'name': name, 'money': money, 'path':path,'title':title};
+  }
+  Product toProduct() {
+    return Product(
+      name: name,
+      title: title,
+      money: money,
+      path: path,
+    );
+  }
+  factory HistoryModel.fromMap(Map<String, dynamic> map) {
+    return HistoryModel(
+      name: map['name'],
+      path: map['path'],
+      title: map['title'],
+      money: (map['money'] as int).toDouble(),
+    );
   }
 }
 
@@ -35,7 +54,7 @@ class HistoryDatabase extends ChangeNotifier {
       join(await getDatabasesPath(), 'history_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE history(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price REAL)",
+          "CREATE TABLE history(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT, name TEXT, money REAL,path TEXT)",
         );
       },
       version: 1,
@@ -57,8 +76,10 @@ class HistoryDatabase extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query('history');
     return List.generate(maps.length, (i) {
       return HistoryModel(
-        name: maps[i]['name'],
-        price: maps[i]['price'],
+          name: maps[i]['name'],
+          money: maps[i]['money'],
+          path: maps[i]['path'],
+        title: maps[i]['title']
       );
     });
   }
@@ -70,6 +91,28 @@ class HistoryDatabase extends ChangeNotifier {
       where: 'name = ?',
       whereArgs: [name],
     );
+    notifyListeners();
+  }
+
+  Future<void> addToCart(HistoryModel history) async {
+    final databasePath = await getDatabasesPath();
+    final cartDbPath = join(databasePath, 'cart_database.db');
+
+    // Mở database cart
+    final cartDb = await openDatabase(cartDbPath);
+
+    // Thực hiện chèn vào bảng Cart
+    await cartDb.insert(
+      'Cart',
+      {
+        'name': history.name,
+        'title': history.title,
+        'money': history.money,
+        'path': history.path,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    _items.add(history);
     notifyListeners();
   }
 }

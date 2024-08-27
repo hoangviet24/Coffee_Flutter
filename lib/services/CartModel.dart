@@ -91,7 +91,12 @@ class CartModel extends ChangeNotifier {
     // Thêm dữ liệu vào lịch sử
     for (var item in _items) {
       await _historyDatabase.insertHistory(
-        HistoryModel(name: item.name, price: item.money),
+        HistoryModel(
+            name: item.name,
+            money: item.money,
+            path: item.path,
+          title: item.title
+        ),
       );
     }
 

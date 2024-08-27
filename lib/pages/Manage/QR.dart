@@ -34,16 +34,36 @@ class QRScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                final cartModel =
-                    Provider.of<CartModel>(context, listen: false);
+                final cartModel = Provider.of<CartModel>(context, listen: false);
                 await cartModel.clear();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const firstpage()),
+
+                // Hiển thị thông báo thành công
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Thanh toán thành công'),
+                      content: const Text('Cảm ơn bạn đã mua hàng!'),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Đóng hộp thoại
+                            // Điều hướng về trang đầu tiên sau khi đóng
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const firstpage()),
+                            );
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               child: const Text('Hoàn thành'),
             )
+
           ],
         ),
       ),

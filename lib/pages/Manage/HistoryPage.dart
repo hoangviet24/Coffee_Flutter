@@ -1,3 +1,4 @@
+import 'package:coffee/services/CartModel.dart';
 import 'package:coffee/services/histories_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,30 +46,43 @@ class _HistoryPageState extends State<HistoryPage> {
               itemCount: historyItems.length,
               itemBuilder: (context, index) {
                 final item = historyItems[index];
+
                 return ListTile(
+                  leading: Image.asset(
+                    item.path,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
                   title: Text(item.name),
-                  subtitle: Text('Giá: \$${item.price.toStringAsFixed(2)}'),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final historyDb =
-                          Provider.of<HistoryDatabase>(context, listen: false);
-                      await historyDb
-                          .deleteHistory(item.name); // Xóa item khỏi DB
+                  subtitle: Text('Giá: \$${item.money.toStringAsFixed(2)}'),
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Đã xóa ${item.name} khỏi lịch sử'),
-                          duration: const Duration(milliseconds: 200),
-                        ),
+                  trailing: Consumer<CartModel>(
+                    builder: (context, cartModel, child) {
+                      return IconButton(
+                        icon: Icon(Icons.add, color: Colors.green),
+                        onPressed: () {
+                          // Chuyển đổi từ HistoryModel sang Product trước khi thêm vào giỏ hàng
+                          final product = item.toProduct();
+                          cartModel.add(product);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Đã thêm ${item.name} vào giỏ hàng'),
+                              duration: const Duration(milliseconds: 200),
+                            ),
+                          );
+
+                          _refreshHistory();
+                        },
                       );
-
-                      _refreshHistory(); // Cập nhật lại lịch sử sau khi xóa
                     },
                   ),
                 );
               },
             );
+
+
           }
         },
       ),
