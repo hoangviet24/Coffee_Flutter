@@ -6,7 +6,7 @@
         </intent>
     </queries>
     <application
-        android:label="coffee"
+        android:label="coffee yourself"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

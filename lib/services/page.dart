@@ -89,7 +89,13 @@ class _UserDataPageState extends State<UserDataPage> {
                     ),
                   ),
                 ),
-                // Thêm thông tin người dùng khác nếu cần
+                const SizedBox(height: 20), // Tạo khoảng cách
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _logout, // Gọi hàm logout
+                    child: const Text('Đăng xuất'),
+                  ),
+                ),
               ],
             ),
           );

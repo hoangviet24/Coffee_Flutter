@@ -24,13 +24,28 @@ class _SignUpState extends State<SignUp> {
     final db = DatabaseHelper();
     int result = await db.signup(user);
 
-    if (result > 0) {
+    if (result == -1) {
+      // Hiển thị thông báo lỗi khi tên người dùng đã tồn tại
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tên đăng nhập đã tồn tại!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else if (result > 0) {
+      // Nếu đăng ký thành công, chuyển hướng về màn hình đăng nhập
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     } else {
-      // Xử lý lỗi khi đăng ký không thành công (nếu cần)
+      // Xử lý lỗi không rõ (nếu cần)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Đã xảy ra lỗi khi đăng ký.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
