@@ -1,6 +1,8 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
+import 'package:coffee/Data/User.dart';
 import 'package:coffee/Order/orderSelection.dart';
+import 'package:coffee/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee/services/CartModel.dart';
@@ -14,7 +16,14 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   bool _isSnackBarVisible = false;
+  late Future<Users?> _currentUserFuture;
   @override
+  void initState() {
+    super.initState();
+    _currentUserFuture =
+        DatabaseHelper().getCurrentUser(); // Lấy dữ liệu người dùng
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -94,25 +103,79 @@ class _CartState extends State<Cart> {
         builder: (context, cart, child) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: cart.items.isEmpty
-                  ? null
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            // ignore: prefer_const_constructors
-                            builder: (context) => OrderSelectionPage()),
+            child: FutureBuilder(
+              future:
+                  _currentUserFuture, // Future từ hàm lấy dữ liệu người dùng
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Hiển thị loading khi dữ liệu đang tải
+                  return ElevatedButton(
+                    onPressed: null, // Nút không khả dụng khi đang tải
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: const Text(
+                      'Đang kiểm tra...',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  // Người dùng đã đăng nhập
+                  return ElevatedButton(
+                    onPressed: cart.items.isEmpty
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderSelectionPage(),
+                              ),
+                            );
+                          },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: const Text(
+                      'Thanh toán',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                } else {
+                  // Người dùng chưa đăng nhập
+                  return ElevatedButton(
+                    onPressed: () {
+                      // Hiển thị hộp thoại yêu cầu đăng nhập
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Thông báo"),
+                            content: Text("Hãy đăng nhập để thanh toán."),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Đóng hộp thoại
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: const Text(
-                'Thanh toán',
-                style: TextStyle(fontSize: 18),
-              ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: const Text(
+                      'Thanh toán',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                }
+              },
             ),
           );
         },

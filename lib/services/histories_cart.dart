@@ -93,26 +93,4 @@ class HistoryDatabase extends ChangeNotifier {
     );
     notifyListeners();
   }
-
-  Future<void> addToCart(HistoryModel history) async {
-    final databasePath = await getDatabasesPath();
-    final cartDbPath = join(databasePath, 'cart_database.db');
-
-    // Mở database cart
-    final cartDb = await openDatabase(cartDbPath);
-
-    // Thực hiện chèn vào bảng Cart
-    await cartDb.insert(
-      'Cart',
-      {
-        'name': history.name,
-        'title': history.title,
-        'money': history.money,
-        'path': history.path,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    _items.add(history);
-    notifyListeners();
-  }
 }

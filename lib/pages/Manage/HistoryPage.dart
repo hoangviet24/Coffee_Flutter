@@ -56,7 +56,6 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                   title: Text(item.name),
                   subtitle: Text('Giá: \$${item.money.toStringAsFixed(2)}'),
-
                   trailing: Consumer<CartModel>(
                     builder: (context, cartModel, child) {
                       return IconButton(
@@ -68,11 +67,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Đã thêm ${item.name} vào giỏ hàng'),
+                              content:
+                                  Text('Đã thêm ${item.name} vào giỏ hàng'),
                               duration: const Duration(milliseconds: 200),
                             ),
                           );
-
                           _refreshHistory();
                         },
                       );
@@ -81,8 +80,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 );
               },
             );
-
-
           }
         },
       ),
