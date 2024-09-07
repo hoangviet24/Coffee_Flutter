@@ -138,7 +138,7 @@ class _CartState extends State<Cart> {
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     child: const Text(
-                      'Thanh toán',
+                      'Đặt Hàng',
                       style: TextStyle(fontSize: 18),
                     ),
                   );
