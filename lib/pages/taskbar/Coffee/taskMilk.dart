@@ -23,46 +23,55 @@ class _taskMilkState extends State<taskMilk> {
   bool _isSnackBarVisible = false;
   final List<Product> products = [
     Product(
+        id: 50,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 51,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 52,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 53,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 54,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 55,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 56,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 57,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 58,
         name: "Americano",
         path: 'assets/trasua.png',
         title: "Americano Coffee",
@@ -92,6 +101,7 @@ class _taskMilkState extends State<taskMilk> {
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailPage(
+              id: product.id,
               imageName: product.name,
               imagePath: product.path,
               title: product.title,

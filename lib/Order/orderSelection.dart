@@ -1,3 +1,4 @@
+import 'package:coffee/Data/Product.dart';
 import 'package:coffee/Order/orderAtHome.dart';
 import 'package:coffee/Order/orderAtTable.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:coffee/services/CartModel.dart';
 
 class OrderSelectionPage extends StatelessWidget {
-  const OrderSelectionPage({super.key});
+  final List<Product> selectedItems; // Thêm thuộc tính selectedItems
+
+  const OrderSelectionPage({super.key, required this.selectedItems});
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +29,20 @@ class OrderSelectionPage extends StatelessWidget {
                     context,
                     'Đặt hàng tại bàn',
                     Icons.table_chart,
-                    OrderTablePage(totalPrice: cart.totalPrice),
+                    OrderTablePage(
+                      totalPrice: cart.totalPrice,
+                      selectedItems: selectedItems,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   _buildOrderOption(
                     context,
                     'Đặt hàng về nhà',
                     Icons.home,
-                    OrderHomePage(totalPrice: cart.totalPrice),
+                    OrderHomePage(
+                      totalPrice: cart.totalPrice,
+                      selectedItems: selectedItems,
+                    ),
                   ),
                 ],
               ),

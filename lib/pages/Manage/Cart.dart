@@ -1,11 +1,9 @@
-// ignore_for_file: file_names, use_build_context_synchronously
-
-import 'package:coffee/Data/User.dart';
-import 'package:coffee/Order/orderSelection.dart';
-import 'package:coffee/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee/services/CartModel.dart';
+import 'package:coffee/Order/orderSelection.dart';
+import 'package:coffee/services/database_helper.dart';
+import 'package:coffee/Data/User.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -17,13 +15,14 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   bool _isSnackBarVisible = false;
   late Future<Users?> _currentUserFuture;
+
   @override
   void initState() {
     super.initState();
-    _currentUserFuture =
-        DatabaseHelper().getCurrentUser(); // Lấy dữ liệu người dùng
+    _currentUserFuture = DatabaseHelper().getCurrentUser();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -59,25 +58,37 @@ class _CartState extends State<Cart> {
                         ),
                         title: Text(item.name),
                         subtitle: Text(item.title),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            await cart.remove(index);
-                            if (!_isSnackBarVisible) {
-                              _isSnackBarVisible = true;
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Sản phẩm đã được xóa'),
-                                      duration: Duration(milliseconds: 200),
-                                    ),
-                                  )
-                                  .closed
-                                  .then((_) {
-                                _isSnackBarVisible = true;
-                              });
-                            }
-                          },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Checkbox(
+                              value: item.isSelected,
+                              onChanged: (bool? value) {
+                                // Cập nhật trạng thái chọn của sản phẩm
+                                cart.updateSelection(item.id, value ?? false);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () async {
+                                await cart.remove(index);
+                                if (!_isSnackBarVisible) {
+                                  _isSnackBarVisible = true;
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Sản phẩm đã được xóa'),
+                                          duration: Duration(milliseconds: 200),
+                                        ),
+                                      )
+                                      .closed
+                                      .then((_) {
+                                    _isSnackBarVisible = true;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -86,7 +97,7 @@ class _CartState extends State<Cart> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Tổng tiền: \$${cart.totalPrice.toStringAsFixed(2)}',
+                    'Tổng tiền: \$${cart.totalSelectedPrice.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -104,13 +115,11 @@ class _CartState extends State<Cart> {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: FutureBuilder(
-              future:
-                  _currentUserFuture, // Future từ hàm lấy dữ liệu người dùng
+              future: _currentUserFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Hiển thị loading khi dữ liệu đang tải
                   return ElevatedButton(
-                    onPressed: null, // Nút không khả dụng khi đang tải
+                    onPressed: null,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       minimumSize: const Size(double.infinity, 50),
@@ -121,15 +130,19 @@ class _CartState extends State<Cart> {
                     ),
                   );
                 } else if (snapshot.hasData && snapshot.data != null) {
-                  // Người dùng đã đăng nhập
+                  final selectedItems =
+                      cart.items.where((item) => item.isSelected).toList();
+
                   return ElevatedButton(
-                    onPressed: cart.items.isEmpty
+                    onPressed: selectedItems.isEmpty
                         ? null
                         : () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => OrderSelectionPage(),
+                                builder: (context) => OrderSelectionPage(
+                                  selectedItems: selectedItems,
+                                ),
                               ),
                             );
                           },
@@ -143,10 +156,8 @@ class _CartState extends State<Cart> {
                     ),
                   );
                 } else {
-                  // Người dùng chưa đăng nhập
                   return ElevatedButton(
                     onPressed: () {
-                      // Hiển thị hộp thoại yêu cầu đăng nhập
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -157,7 +168,7 @@ class _CartState extends State<Cart> {
                               TextButton(
                                 child: Text("OK"),
                                 onPressed: () {
-                                  Navigator.of(context).pop(); // Đóng hộp thoại
+                                  Navigator.of(context).pop();
                                 },
                               ),
                             ],
@@ -170,7 +181,7 @@ class _CartState extends State<Cart> {
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     child: const Text(
-                      'Thanh toán',
+                      'Đặt Hàng',
                       style: TextStyle(fontSize: 18),
                     ),
                   );

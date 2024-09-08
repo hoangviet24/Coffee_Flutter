@@ -1,13 +1,12 @@
+import 'package:coffee/Data/Product.dart';
 import 'package:coffee/pages/Manage/QR.dart';
 import 'package:flutter/material.dart';
 
 class OrderTablePage extends StatefulWidget {
   final double totalPrice;
-
-  const OrderTablePage({
-    required this.totalPrice,
-    super.key,
-  });
+  final List<Product> selectedItems;
+  const OrderTablePage(
+      {required this.totalPrice, super.key, required this.selectedItems});
 
   @override
   _OrderTablePageState createState() => _OrderTablePageState();
@@ -42,11 +41,16 @@ class _OrderTablePageState extends State<OrderTablePage> {
       return;
     }
 
+    final totalSelectedPrice = widget.selectedItems
+        .fold(0.0, (sum, item) => sum + item.money); // Tính tổng giá
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => QRScreen(
-          totalPrice: widget.totalPrice,
+          totalPrice: totalSelectedPrice,
+          selectedItems:
+              widget.selectedItems, // Truyền danh sách sản phẩm đã chọn
         ),
       ),
     );

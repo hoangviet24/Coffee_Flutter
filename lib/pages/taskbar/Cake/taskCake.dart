@@ -23,41 +23,49 @@ class _taskCakeState extends State<taskCake> {
   bool _isSnackBarVisible = false;
   final List<Product> products = [
     Product(
+        id: 26,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 27,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 28,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 29,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 30,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 31,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 32,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
         money: 25000),
     Product(
+        id: 33,
         name: "Americano",
         path: 'assets/Americano.png',
         title: "Americano Coffee",
@@ -89,6 +97,7 @@ class _taskCakeState extends State<taskCake> {
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailPage(
+              id: product.id,
               imageName: product.name,
               imagePath: product.path,
               title: product.title,

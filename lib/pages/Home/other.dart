@@ -22,41 +22,49 @@ class _OtherState extends State<Other> {
     // Danh sách các sản phẩm
     List<Product> products = [
       Product(
+          id: 10,
           name: "Americano",
           title: "Rich Americano",
           money: 1000,
           path: 'assets/1.png'),
       Product(
+          id: 11,
           name: "Robusta",
           title: "Bold Robusta",
           money: 1200,
           path: 'assets/1.png'),
       Product(
+          id: 12,
           name: "Kopi Luwak",
           title: "Exotic Kopi Luwak",
           money: 2000,
           path: 'assets/1.png'),
       Product(
+          id: 13,
           name: "Arabica",
           title: "Smooth Arabica",
           money: 1500,
           path: 'assets/1.png'),
       Product(
+          id: 14,
           name: "Cherry",
           title: "Sweet Cherry",
           money: 1100,
           path: 'assets/1.png'),
       Product(
+          id: 15,
           name: "Bourbon",
           title: "Classic Bourbon",
           money: 1300,
           path: 'assets/1.png'),
       Product(
+          id: 16,
           name: "Monika",
           title: "Elegant Monika",
           money: 1400,
           path: 'assets/1.png'),
       Product(
+          id: 17,
           name: "Genshin Impact",
           title: "Genshin Special",
           money: 1600,
@@ -98,6 +106,7 @@ class _OtherState extends State<Other> {
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailPage(
+              id: product.id,
               imageName: product.name,
               imagePath: product.path,
               title: product.title,

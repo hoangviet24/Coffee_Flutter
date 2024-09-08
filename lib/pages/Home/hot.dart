@@ -23,46 +23,55 @@ class _HotsceneState extends State<Hotscene> {
     // Danh sách các sản phẩm
     List<Product> products = [
       Product(
+          id: 1,
           name: "Kamisato Ayaka 1",
           title: "Title 1",
           money: 1000,
           path: 'assets/1.png'),
       Product(
+          id: 2,
           name: "Kamisato Ayaka 2",
           title: "Title 2",
           money: 2000,
           path: 'assets/2.png'),
       Product(
+          id: 3,
           name: "Kamisato Ayaka 3",
           title: "Title 3",
           money: 3000,
           path: 'assets/3.png'),
       Product(
+          id: 4,
           name: "Kamisato Ayaka 4",
           title: "Title 4",
           money: 4000,
           path: 'assets/4.png'),
       Product(
+          id: 5,
           name: "Kamisato Ayaka 5",
           title: "Title 5",
           money: 5000,
           path: 'assets/5.png'),
       Product(
+          id: 6,
           name: "Kamisato Ayaka 6",
           title: "Title 6",
           money: 6000,
           path: 'assets/6.png'),
       Product(
+          id: 7,
           name: "Kamisato Ayaka 7",
           title: "Title 7",
           money: 7000,
           path: 'assets/7.png'),
       Product(
+          id: 8,
           name: "Kamisato Ayaka 8",
           title: "Title 8",
           money: 8000,
           path: 'assets/8.png'),
       Product(
+          id: 9,
           name: "Kamisato Ayaka 9",
           title: "Title 9",
           money: 9000,
@@ -84,6 +93,7 @@ class _HotsceneState extends State<Hotscene> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProductDetailPage(
+                    id: product.id,
                     imageName: product.name,
                     imagePath: product.path,
                     title: product.title,

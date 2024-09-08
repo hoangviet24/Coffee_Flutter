@@ -20,41 +20,49 @@ class _SuggestState extends State<Suggest> {
     // Danh sách các sản phẩm
     List<Product> products = [
       Product(
+          id: 18,
           name: "Americano",
           title: "Rich Americano",
           money: 1000,
           path: 'assets/Americano.png'),
       Product(
+          id: 19,
           name: "Robusta",
           title: "Bold Robusta",
           money: 1200,
           path: 'assets/Americano.png'),
       Product(
+          id: 20,
           name: "Kopi Luwak",
           title: "Exotic Kopi Luwak",
           money: 2000,
           path: 'assets/Americano.png'),
       Product(
+          id: 21,
           name: "Arabica",
           title: "Smooth Arabica",
           money: 1500,
           path: 'assets/Americano.png'),
       Product(
+          id: 22,
           name: "Cherry",
           title: "Sweet Cherry",
           money: 1100,
           path: 'assets/Americano.png'),
       Product(
+          id: 23,
           name: "Bourbon",
           title: "Classic Bourbon",
           money: 1300,
           path: 'assets/Americano.png'),
       Product(
+          id: 24,
           name: "Moka",
           title: "Classic Moka",
           money: 1400,
           path: 'assets/Americano.png'),
       Product(
+          id: 25,
           name: "Typical",
           title: "Typical Blend",
           money: 1600,
@@ -84,6 +92,7 @@ class _SuggestState extends State<Suggest> {
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailPage(
+              id: product.id,
               imageName: product.name,
               imagePath: product.path,
               title: product.title,

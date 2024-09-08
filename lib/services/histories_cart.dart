@@ -4,28 +4,40 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class HistoryModel {
+  final int id;
   final String name;
   final String path;
   final String title;
   final double money;
   HistoryModel(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.money,
       required this.path,
-      required this.title });
+      required this.title});
   Map<String, dynamic> toMap() {
-    return {'name': name, 'money': money, 'path':path,'title':title};
+    return {
+      'id': id,
+      'name': name,
+      'money': money,
+      'path': path,
+      'title': title
+    };
   }
+
   Product toProduct() {
     return Product(
+      id: id,
       name: name,
       title: title,
       money: money,
       path: path,
     );
   }
+
   factory HistoryModel.fromMap(Map<String, dynamic> map) {
     return HistoryModel(
+      id: map['id'],
       name: map['name'],
       path: map['path'],
       title: map['title'],
@@ -61,14 +73,32 @@ class HistoryDatabase extends ChangeNotifier {
     );
   }
 
-  Future<void> insertHistory(HistoryModel history) async {
+  Future<bool> _historyExists(HistoryModel history) async {
     final db = await database;
-    await db.insert(
+    final List<Map<String, dynamic>> maps = await db.query(
       'history',
-      history.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'name = ? AND title = ? AND money = ? AND path = ?',
+      whereArgs: [
+        history.name,
+        history.title,
+        history.money,
+        history.path,
+      ],
     );
-    notifyListeners();
+    return maps.isNotEmpty;
+  }
+
+  Future<void> insertHistory(HistoryModel history) async {
+    final exists = await _historyExists(history);
+    if (!exists) {
+      final db = await database;
+      await db.insert(
+        'history',
+        history.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      notifyListeners();
+    }
   }
 
   Future<List<HistoryModel>> getHistory() async {
@@ -76,21 +106,11 @@ class HistoryDatabase extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query('history');
     return List.generate(maps.length, (i) {
       return HistoryModel(
+          id: maps[i]['id'],
           name: maps[i]['name'],
           money: maps[i]['money'],
           path: maps[i]['path'],
-        title: maps[i]['title']
-      );
+          title: maps[i]['title']);
     });
-  }
-
-  Future<void> deleteHistory(String name) async {
-    final db = await database;
-    await db.delete(
-      'history',
-      where: 'name = ?',
-      whereArgs: [name],
-    );
-    notifyListeners();
   }
 }

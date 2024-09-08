@@ -34,39 +34,37 @@ class CartModel extends ChangeNotifier {
   }
 
   Future<void> loadCart() async {
-    try {
-      final db = await _db; // Lấy instance của database
-      final List<Map<String, dynamic>> maps =
-          await db.query('Cart'); // Truy vấn dữ liệu từ bảng Cart
-
-      _items = List.generate(maps.length, (i) {
-        // Chuyển đổi thành các đối tượng Product
-        return Product(
-          name: maps[i]['name'],
-          title: maps[i]['title'],
-          money: maps[i]['money'],
-          path: maps[i]['path'],
-        );
-      });
-      notifyListeners(); // Thông báo thay đổi dữ liệu
-    } catch (e) {
-      print('Error loading cart: $e'); // In lỗi nếu có
-    }
+    final db = await _db;
+    final List<Map<String, dynamic>> maps = await db.query('cart');
+    _items = List.generate(maps.length, (i) {
+      return Product(
+        id: maps[i]['id'],
+        name: maps[i]['name'],
+        path: maps[i]['path'],
+        title: maps[i]['title'],
+        money: maps[i]['money'],
+        isSelected: maps[i]['isSelected'] == 1,
+      );
+    });
+    notifyListeners();
   }
 
-  Future<void> add(Product product) async {
-    await _db.insert(
-      'Cart',
-      {
-        'name': product.name,
-        'title': product.title,
-        'money': product.money,
-        'path': product.path,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    _items.add(product);
+  void add(Product product) {
+    final existingProductIndex = _items.indexWhere((p) => p.id == product.id);
+    if (existingProductIndex != -1) {
+      // Cập nhật trạng thái sản phẩm nếu đã tồn tại
+      _items[existingProductIndex] =
+          product.copyWith(isSelected: _items[existingProductIndex].isSelected);
+    } else {
+      // Thêm sản phẩm mới nếu chưa tồn tại
+      _items.add(product.copyWith(id: _generateUniqueId()));
+    }
+    saveCartState();
     notifyListeners();
+  }
+
+  int _generateUniqueId() {
+    return DateTime.now().millisecondsSinceEpoch;
   }
 
   Future<void> remove(int index) async {
@@ -86,23 +84,39 @@ class CartModel extends ChangeNotifier {
   }
 
   Future<void> clear() async {
-    if (_items.isEmpty) return;
+    final selectedItems = _items.where((item) => item.isSelected).toList();
+
+    if (selectedItems.isEmpty) return;
 
     // Thêm dữ liệu vào lịch sử
-    for (var item in _items) {
+    for (var item in selectedItems) {
       await _historyDatabase.insertHistory(
         HistoryModel(
-            name: item.name,
-            money: item.money,
-            path: item.path,
-          title: item.title
+          id: item.id,
+          name: item.name,
+          money: item.money,
+          path: item.path,
+          title: item.title,
         ),
       );
     }
 
-    // Xóa giỏ hàng
-    await _db.delete('Cart');
-    _items.clear();
+    // Xóa chỉ những sản phẩm đã được chọn
+    for (var item in selectedItems) {
+      await _db.delete(
+        'Cart',
+        where: 'name = ? AND title = ? AND money = ? AND path = ? ',
+        whereArgs: [
+          item.name,
+          item.title,
+          item.money,
+          item.path,
+        ],
+      );
+    }
+
+    _items.removeWhere(
+        (item) => item.isSelected); // Xóa những sản phẩm đã chọn từ danh sách
     notifyListeners();
   }
 
@@ -112,5 +126,35 @@ class CartModel extends ChangeNotifier {
       total += item.money;
     }
     return total;
+  }
+
+  double get totalSelectedPrice {
+    return items
+        .where((item) => item.isSelected)
+        .fold(0, (sum, item) => sum + item.money);
+  }
+
+  void updateSelection(int productId, bool isSelected) {
+    final index = _items.indexWhere((p) => p.id == productId);
+    if (index != -1) {
+      _items[index] = _items[index].copyWith(isSelected: isSelected);
+      saveCartState(); // Lưu trạng thái vào cơ sở dữ liệu
+      notifyListeners();
+    }
+  }
+
+  Future<void> saveCartState() async {
+    final db = await _db;
+    // Xóa tất cả sản phẩm hiện tại trong cơ sở dữ liệu
+    await db.delete('cart');
+
+    // Lưu từng sản phẩm vào cơ sở dữ liệu
+    for (final item in _items) {
+      await db.insert(
+        'cart',
+        item.toMap(), // Chắc chắn rằng Product có phương thức toMap() phù hợp
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
   }
 }

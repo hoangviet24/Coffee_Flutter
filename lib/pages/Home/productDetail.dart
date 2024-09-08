@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
+  final int id;
   final String imageName;
   final String imagePath;
   final String title;
   final double money;
 
   const ProductDetailPage({
+    required this.id,
     required this.imageName,
     required this.imagePath,
     required this.title,
@@ -81,6 +83,7 @@ class ProductDetailPage extends StatelessWidget {
                   onTap: () {
                     final cart = Provider.of<CartModel>(context, listen: false);
                     cart.add(Product(
+                        id: id,
                         name: imageName,
                         path: imagePath,
                         title: title,
